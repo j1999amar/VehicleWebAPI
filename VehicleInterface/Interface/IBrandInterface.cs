@@ -11,11 +11,13 @@ namespace VehicleInterface.Interface
     {
         public Task<Brands> AddBrand(Brands brand);
         public ICollection<Brands> GetAllBrands();
-        public Task<Brands> GetAllBrandsOfAVehicleType(Guid id, Brands brand);
-
-        public Task<Brands> UpdateBrands(Brands brand);
+        public Task<Brands> UpdateBrands(Guid id,Brands brand);
 
         public bool DeleteBrand(Guid id);
         public bool IsExists(Guid id);
+
+        public ICollection<Brands> GetAllBrandsOfAVehicleType(Guid id);
+
+
     }
 }
