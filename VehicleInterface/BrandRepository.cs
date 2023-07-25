@@ -41,6 +41,8 @@ namespace VehicleInterface
             return _context.Brands.Where(brands=>brands.VehicleTypeId==id).ToList();
         }
 
+      
+
         public bool IsExists(Guid id)
         {
             return _context.Brands.Any(brand =>brand.BrandId == id);
@@ -52,6 +54,9 @@ namespace VehicleInterface
             return brand;
         }
 
-        
+        public Task<Brands> UpdateBrands(Brands brand)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

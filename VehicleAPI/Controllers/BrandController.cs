@@ -22,7 +22,7 @@ namespace VehicleAPI.Controllers
         #region Get All Brands
         [HttpGet]
         [Route("[controller]/GetAllBrands")]
-        public async Task<ActionResult<ICollection<BrandDTO>>> GetAllVehicleTypes()
+        public ActionResult<ICollection<BrandDTO>> GetAllVehicleTypes()
         {
             try
             {
@@ -40,11 +40,11 @@ namespace VehicleAPI.Controllers
         #region Get All Brands Of A Vehicle Type
         [HttpGet]
         [Route("[controller]/GetAllBrandsOfAVehicleType")]
-        public async Task<ActionResult<ICollection<BrandDTO>>> GetAllBrandsOfAVehicleType(Guid id)
+        public ActionResult<ICollection<BrandDTO>> GetAllBrandsOfAVehicleType(Guid id)
         {
             if (_vehicle.IsExists(id))
             {
-                var brandsByVehicleType = await _mapper.Map<Task<ICollection<BrandDTO>>>(_brand.GetAllBrandsOfAVehicleType(id));
+                var brandsByVehicleType =  _mapper.Map<ICollection<BrandDTO>>(_brand.GetAllBrandsOfAVehicleType(id));
                 return Ok(brandsByVehicleType);
             }
             else
@@ -61,7 +61,7 @@ namespace VehicleAPI.Controllers
         {
             try
             {
-                var brand = await _mapper.Map<Task<Brands>>(brandDTO);
+                var brand =  _mapper.Map<Brands>(brandDTO);
                 var brandIsAdded = await _brand.AddBrand(brand);
                 if (brandIsAdded != null)
                 {

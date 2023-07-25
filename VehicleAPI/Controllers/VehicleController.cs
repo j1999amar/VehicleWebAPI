@@ -76,11 +76,11 @@ namespace VehicleAPI.Controllers
         #region Get All Vehicle Type
         [HttpGet]
         [Route("[controller]/GetAllVehicleTypes")]
-        public async Task<ActionResult<ICollection<VehicleTypeDTO>>> GetAllVehicleTypes()
+        public  ActionResult<ICollection<VehicleTypeDTO>> GetAllVehicleTypes()
         {
             try
             {
-                var vehicleTypes =await _mapper.Map<Task<ICollection<VehicleTypeDTO>>>(_vehicle.GetAllVehicleTypes());
+                var vehicleTypes = _mapper.Map<ICollection<VehicleTypeDTO>>(_vehicle.GetAllVehicleTypes());
 
                 return Ok(vehicleTypes);
             }
