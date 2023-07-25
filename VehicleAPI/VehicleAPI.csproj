@@ -18,13 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DTO\DTO.csproj" />
     <ProjectReference Include="..\VehicleContext\VehicleContext.csproj" />
     <ProjectReference Include="..\VehicleInterface\VehicleInterface.csproj" />
     <ProjectReference Include="..\VehicleType\VehicleTypeModel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

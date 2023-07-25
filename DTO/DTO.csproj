@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VehicleContext\VehicleContext.csproj" />
     <ProjectReference Include="..\VehicleType\VehicleTypeModel.csproj" />
   </ItemGroup>
 

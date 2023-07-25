@@ -1,5 +1,8 @@
+using DTO;
 using Microsoft.EntityFrameworkCore;
 using VehicleContext;
+using VehicleInterface;
+using VehicleInterface.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,18 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+#region Mapper Config 
+
+builder.Services.AddAutoMapper(typeof(Mapper));
+#endregion
+
+#region  Interface Config
+builder.Services.AddScoped<IVehicleInterface, VehicleRepository>();
+builder.Services.AddScoped<IBrandInterface, BrandRepository>();
+
+
+#endregion
+
 #region DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("VehicleDbContext"),b => b.MigrationsAssembly("VehicleAPI")));
 #endregion

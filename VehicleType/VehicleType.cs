@@ -1,4 +1,6 @@
-﻿namespace VehicleTypeModel
+﻿using System.Text.Json.Serialization;
+
+namespace VehicleTypeModel
 {
     public class VehicleType
     {
