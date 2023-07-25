@@ -10,11 +10,11 @@ using VehicleTypeModel;
 
 namespace VehicleInterface
 {
-    public class BrandInterface : IBrandInterface
+    public class BrandRepository : IBrandInterface
     {
         private readonly ApplicationDbContext _context;
 
-        public BrandInterface(ApplicationDbContext context)
+        public BrandRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -25,34 +25,33 @@ namespace VehicleInterface
             return brandIsAdded > 0 ? brand : null;
 
         }
-
         public  bool DeleteBrand(Guid id)
         {
             var brand= _context.Brands.Find(id);
             _context.Remove(brand);
             return _context.SaveChanges() > 0 ? true : false;
         }
-
         public ICollection<Brands> GetAllBrands()
         {
             return _context.Brands.ToList();
         }
 
-        public Task<Brands> GetAllBrandsOfAVehicleType(Guid id, Brands brand)
+        public ICollection<Brands> GetAllBrandsOfAVehicleType(Guid id)
         {
-            return null;
+            return _context.Brands.Where(brands=>brands.VehicleTypeId==id).ToList();
         }
 
         public bool IsExists(Guid id)
         {
             return _context.Brands.Any(brand =>brand.BrandId == id);
         }
-
-        public async Task<Brands> UpdateBrands(Brands brand)
+        public async Task<Brands> UpdateBrands(Guid id, Brands brand)
         {
             _context.Brands.Entry(brand).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return brand;
         }
+
+        
     }
 }
