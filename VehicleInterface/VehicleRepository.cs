@@ -9,11 +9,11 @@ using VehicleTypeModel;
 
 namespace VehicleInterface
 {
-    public class VehicleInterface : IVehicleInterface
+    public class VehicleRepository : IVehicleInterface
     {
         private readonly ApplicationDbContext _context;
 
-        public VehicleInterface(ApplicationDbContext context)
+        public VehicleRepository(ApplicationDbContext context)
         {
             _context = context;
         }
