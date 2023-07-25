@@ -10,7 +10,7 @@ namespace VehicleInterface.Interface
     public interface IVehicleInterface
     {
         public   Task<VehicleType> AddVehicleType(VehicleType vehicleType);
-        public Task<ICollection<VehicleType>> GetAllVehicleTypes();
+        public ICollection<VehicleType> GetAllVehicleTypes();
         public Task<VehicleType> UpdateVehicleType(Guid id,VehicleType vehicleType);
         public bool IsExists(Guid id);
     }

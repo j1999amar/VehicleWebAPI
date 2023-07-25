@@ -32,9 +32,10 @@ namespace VehicleInterface
             return vehicleType;
         }
 
-        public async Task<ICollection<VehicleType>> GetAllVehicleTypes()
+        public ICollection<VehicleType> GetAllVehicleTypes()
         {
-            return await _context.VehicleTypes.ToListAsync();
+            return _context.VehicleTypes.ToList();
+             
         }
 
         public bool IsExists(Guid id)
