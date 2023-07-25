@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VehicleInterface
 {
-    internal class VehicleInterface
+    public class VehicleInterface
     {
     }
 }
