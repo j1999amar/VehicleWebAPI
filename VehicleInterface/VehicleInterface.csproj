@@ -16,4 +16,9 @@
     <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VehicleContext\VehicleContext.csproj" />
+    <ProjectReference Include="..\VehicleType\VehicleTypeModel.csproj" />
+  </ItemGroup>
+
 </Project>
