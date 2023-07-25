@@ -5,6 +5,7 @@
         public Guid VehicleTypeId { get; set; }
         public string  VehicleTypeName { get; set; }
         public string Description { get; set; }
+        public ICollection<Brands> Brands { get; set; }
 
 
 

@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace VehicleTypeModel
 {
-    internal class Brands
+    public class Brands
     {
         public Guid BrandId { get; set; }
         public string BrandName { get; set; }
         public string Description { get; set;}
+
+        public Guid VehicleTypeId { get; set; }
+
+        public VehicleType VehicleType { get; set; }
     }
 }

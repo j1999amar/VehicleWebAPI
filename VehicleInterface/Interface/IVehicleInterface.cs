@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VehicleInterface.Interface
 {
-    internal interface IVehicleInterface
+    public interface IVehicleInterface
     {
     }
 }
