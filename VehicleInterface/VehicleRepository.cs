@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,15 +25,21 @@ namespace VehicleInterface
             return vehicleIsAdded > 0 ? vehicleType : null;
         }
 
-        public async Task<VehicleType> EditVehicleType(Guid id, VehicleType vehicleType)
+        public async Task<VehicleType> UpdateVehicleType(Guid id, VehicleType vehicleType)
         {
-            return null;
+            _context.VehicleTypes.Entry(vehicleType).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return vehicleType;
         }
 
-        public Task<ICollection<VehicleType>> GetAllVehicleType()
+        public async Task<ICollection<VehicleType>> GetAllVehicleTypes()
         {
-            return null;
+            return await _context.VehicleTypes.ToListAsync();
+        }
 
+        public bool IsExists(Guid id)
+        {
+           return _context.VehicleTypes.Any(vehicleType => vehicleType.VehicleTypeId == id);
         }
     }
 }
