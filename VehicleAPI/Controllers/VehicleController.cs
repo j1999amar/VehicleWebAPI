@@ -63,7 +63,7 @@ namespace VehicleAPI.Controllers
                     await _vehicle.UpdateVehicleType(id, vehicleType);
                     return Ok(vehicleTypeDTO);
                 }
-                return null;
+                return BadRequest("Id not found");
             }
             catch (Exception ex) 
             {
