@@ -57,7 +57,7 @@ namespace VehicleAPI.Controllers
         #region Brand Post Method
         [HttpPost]
         [Route("[controller]/AddBrand")]
-        public async Task<ActionResult<BrandDTO>> AddVehicleType(BrandDTO brandDTO)
+        public async Task<ActionResult<BrandDTO>> AddVehicleType([FromBody] BrandDTO brandDTO)
         {
             try
             {
