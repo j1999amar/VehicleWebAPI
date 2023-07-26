@@ -21,7 +21,7 @@ namespace VehicleAPI.Controllers
         #region Vehicle Post Method
         [HttpPost]
         [Route("[controller]/AddVehicleType")]
-        public async Task<ActionResult<VehicleTypeDTO>> AddVehicleType(VehicleTypeDTO vehicleTypeDTO)
+        public async Task<ActionResult<VehicleTypeDTO>> AddVehicleType([FromBody] VehicleTypeDTO vehicleTypeDTO)
         {
             try
             {
@@ -48,8 +48,8 @@ namespace VehicleAPI.Controllers
         #region Vehicle Put Method
 
         [HttpPut]
-        [Route("[controller]/UpdateVehicleType")]
-        public async Task<ActionResult<VehicleTypeDTO>> UpdateVehicleType(Guid id, VehicleTypeDTO vehicleTypeDTO)
+        [Route("[controller]/UpdateVehicleType/{id}")]
+        public async Task<ActionResult<VehicleTypeDTO>> UpdateVehicleType([FromRoute] Guid id, [FromBody] VehicleTypeDTO vehicleTypeDTO)
         {
             try
             {
