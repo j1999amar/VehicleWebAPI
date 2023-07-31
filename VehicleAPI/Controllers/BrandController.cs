@@ -40,7 +40,7 @@ namespace VehicleAPI.Controllers
         #region Get All Brands Of A Vehicle Type
         [HttpGet]
         [Route("[controller]/GetAllBrandsOfAVehicleType/{id}")]
-        public ActionResult<ICollection<BrandDTO>> GetAllBrandsOfAVehicleType ( [FromRoute] Guid id)
+        public ActionResult<ICollection<BrandDTO>> GetAllBrandsOfAVehicleType ( [FromRoute] int id)
         {
             if (_vehicle.IsExists(id))
             {
@@ -74,8 +74,9 @@ namespace VehicleAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
+
 
         }
         #endregion
@@ -83,7 +84,7 @@ namespace VehicleAPI.Controllers
         #region Brand Put Method
         [HttpPut]
         [Route("[controller]/UpdateBrand/{id}")]
-        public async Task<ActionResult<BrandDTO>> UpdateBrand([FromRoute] Guid id,[FromBody] BrandDTO brandDTO)
+        public async Task<ActionResult<BrandDTO>> UpdateBrand([FromRoute] int id,[FromBody] BrandDTO brandDTO)
         {
             try
             {
@@ -113,7 +114,7 @@ namespace VehicleAPI.Controllers
         #region Brand Delete Method
         [HttpDelete]
         [Route("[controller]/DeleteBrand/{id}")]
-        public ActionResult DeleteBrand([FromRoute]Guid id)
+        public ActionResult DeleteBrand([FromRoute]int id)
         {
             if(_brand.IsExists(id))
             {

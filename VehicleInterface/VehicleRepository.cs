@@ -18,27 +18,27 @@ namespace VehicleInterface
         {
             _context = context;
         }
-        public async Task<VehicleType> AddVehicleType(VehicleType vehicleType)
+        public async Task<VehicleTypes> AddVehicleType(VehicleTypes vehicleType)
         {
             await _context.VehicleTypes.AddAsync(vehicleType);
             var vehicleIsAdded=await _context.SaveChangesAsync();
             return vehicleIsAdded > 0 ? vehicleType : null;
         }
 
-        public async Task<VehicleType> UpdateVehicleType(Guid id, VehicleType vehicleType)
+        public async Task<VehicleTypes> UpdateVehicleType(int id, VehicleTypes vehicleType)
         {
             _context.VehicleTypes.Entry(vehicleType).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return vehicleType;
         }
 
-        public ICollection<VehicleType> GetAllVehicleTypes()
+        public ICollection<VehicleTypes> GetAllVehicleTypes()
         {
             return _context.VehicleTypes.ToList();
              
         }
 
-        public bool IsExists(Guid id)
+        public bool IsExists(int id)
         {
            return _context.VehicleTypes.Any(vehicleType => vehicleType.VehicleTypeId == id);
         }
