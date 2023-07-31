@@ -25,7 +25,7 @@ namespace VehicleAPI.Controllers
         {
             try
             {
-                var vehiclType =  _mapper.Map<VehicleType>(vehicleTypeDTO);
+                var vehiclType =  _mapper.Map<VehicleTypes>(vehicleTypeDTO);
                 var vehicleTypeIsAdded = await _vehicle.AddVehicleType(vehiclType);
                 if (vehicleTypeIsAdded != null)
                 {
@@ -38,7 +38,7 @@ namespace VehicleAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
 
         }
@@ -49,7 +49,7 @@ namespace VehicleAPI.Controllers
 
         [HttpPut]
         [Route("[controller]/UpdateVehicleType/{id}")]
-        public async Task<ActionResult<VehicleTypeDTO>> UpdateVehicleType([FromRoute] Guid id, [FromBody] VehicleTypeDTO vehicleTypeDTO)
+        public async Task<ActionResult<VehicleTypeDTO>> UpdateVehicleType([FromRoute] int id, [FromBody] VehicleTypeDTO vehicleTypeDTO)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace VehicleAPI.Controllers
                 }
                 if (_vehicle.IsExists(id))
                 {
-                    var vehicleType = _mapper.Map<VehicleType>(vehicleTypeDTO);
+                    var vehicleType = _mapper.Map<VehicleTypes>(vehicleTypeDTO);
                     await _vehicle.UpdateVehicleType(id, vehicleType);
                     return Ok(vehicleTypeDTO);
                 }

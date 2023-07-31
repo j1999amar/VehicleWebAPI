@@ -12,7 +12,7 @@ namespace DTO
     {
         public Mapper()
         {
-            CreateMap<VehicleType,VehicleTypeDTO>().ReverseMap();
+            CreateMap<VehicleTypes,VehicleTypeDTO>().ReverseMap();
             CreateMap<Brands, BrandDTO>().ReverseMap();
 
         }

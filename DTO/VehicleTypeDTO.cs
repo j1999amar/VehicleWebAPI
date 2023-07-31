@@ -8,8 +8,8 @@ namespace DTO
 {
     public class VehicleTypeDTO
     {
-        public Guid VehicleTypeId { get; set; }
-        public string VehicleTypeName { get; set; }
+        public int VehicleTypeId { get; set; }
+        public string VehicleType { get; set; }
         public string Description { get; set; }
     }
 }

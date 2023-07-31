@@ -25,7 +25,7 @@ namespace VehicleInterface
             return brandIsAdded > 0 ? brand : null;
 
         }
-        public  bool DeleteBrand(Guid id)
+        public  bool DeleteBrand(int id)
         {
             var brand= _context.Brands.Find(id);
             _context.Remove(brand);
@@ -36,18 +36,18 @@ namespace VehicleInterface
             return _context.Brands.ToList();
         }
 
-        public ICollection<Brands> GetAllBrandsOfAVehicleType(Guid id)
+        public ICollection<Brands> GetAllBrandsOfAVehicleType(int id)
         {
             return _context.Brands.Where(brands=>brands.VehicleTypeId==id).ToList();
         }
 
       
 
-        public bool IsExists(Guid id)
+        public bool IsExists(int id)
         {
             return _context.Brands.Any(brand =>brand.BrandId == id);
         }
-        public async Task<Brands> UpdateBrands(Guid id, Brands brand)
+        public async Task<Brands> UpdateBrands(int id, Brands brand)
         {
             _context.Brands.Entry(brand).State = EntityState.Modified;
             await _context.SaveChangesAsync();
