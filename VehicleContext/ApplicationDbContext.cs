@@ -8,11 +8,11 @@ using VehicleTypeModel;
 
 namespace VehicleContext
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-                
+
         }
 
         public DbSet<Brands> Brands { get; set; }
@@ -20,40 +20,63 @@ namespace VehicleContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure the primary key
-            modelBuilder.Entity<VehicleTypes>().HasKey(v => v.VehicleTypeId);
+            #region VehicleType Property
 
-            // Configure the unique constraint
-            modelBuilder.Entity<VehicleTypes>().HasIndex(v => v.VehicleTypeId).IsUnique();
+            //Setting Vehicle Type Id is Required 
+            modelBuilder.Entity<VehicleTypes>()
+                 .Property(vehicleType => vehicleType.VehicleTypeId).IsRequired();
 
-            // Configure the column properties
-            modelBuilder.Entity<VehicleTypes>().Property(v => v.VehicleType).HasMaxLength(50);
-            modelBuilder.Entity<VehicleTypes>().Property(v => v.Description).HasMaxLength(100);
-            modelBuilder.Entity<VehicleTypes>().Property(v => v.IsActive);
+            //Setting Vehicle Type Name Limit
+            modelBuilder.Entity<VehicleTypes>()
+                 .Property(vehicleType => vehicleType.VehicleType).IsRequired().HasMaxLength(50);
 
-            // Configure the table name
-            modelBuilder.Entity<VehicleTypes>().ToTable("vehicletype");
+            //Setting Vehicle Type Description Limit
+            modelBuilder.Entity<VehicleTypes>()
+                 .Property(vehicleType => vehicleType.Description).IsRequired().HasMaxLength(100);
 
-            base.OnModelCreating(modelBuilder);
+            #endregion
 
-            modelBuilder.Entity<Brands>().HasKey(b => b.BrandId);
-            modelBuilder.Entity<Brands>().Property(b => b.Brand).HasMaxLength(45);
-            modelBuilder.Entity<Brands>().Property(b => b.Description).HasMaxLength(100);
-            modelBuilder.Entity<Brands>().Property(b => b.SortOrder);
-            modelBuilder.Entity<Brands>().Property(b => b.IsActive);
+            #region VehicleType Key Constraints & Relations
+            //Primary Key For Brands
+            modelBuilder.Entity<VehicleTypes>().HasKey(vehicleType => vehicleType.VehicleTypeId);
 
-            // Configure the foreign key relationship
+
+            //Relation between Vehicle Type & Brands
+            modelBuilder.Entity<VehicleTypes>()
+                        .HasMany(vehicleType => vehicleType.Brands)
+                        .WithOne(brand => brand.VehicleType)
+                        .HasForeignKey(brand => brand.VehicleTypeId);
+
+            #endregion
+
+            #region Brands Property
+
+            //Setting Vehicle Type Id is Required 
             modelBuilder.Entity<Brands>()
-            .HasOne(b => b.VehicleType) // Brand has one VehicleType
-            .WithMany(v => v.Brands) // VehicleType has many Brands
-            .HasForeignKey(b => b.VehicleTypeId) // Foreign key property in Brand entity
-            .OnDelete(DeleteBehavior.Restrict); // Optional: Specify the delete behavior
+                 .Property(brands => brands.BrandId).IsRequired();
+
+            //Setting Vehicle Type Name Limit
+            modelBuilder.Entity<Brands>()
+                 .Property(brands => brands.Brand).IsRequired().HasMaxLength(45);
+
+            //Setting Vehicle Type Description Limit
+            modelBuilder.Entity<Brands>()
+                 .Property(brands => brands.Description).IsRequired().HasMaxLength(100);
+
+            #endregion    
+
+            #region Brands Key Constraints & Relations
+            //Primary Key For Brands
+            modelBuilder.Entity<Brands>().HasKey(brands => brands.BrandId);
 
 
-            // Configure the table name
-            modelBuilder.Entity<Brands>().ToTable("brand");
+            //Relation between Brands & Vehicle Brands
+            modelBuilder.Entity<Brands>()
+                        .HasOne(brand => brand.VehicleType)
+                        .WithMany(vehicleType => vehicleType.Brands)
+                        .HasForeignKey(brand => brand.VehicleTypeId);
 
-            base.OnModelCreating(modelBuilder);
+            #endregion
 
 
         }
