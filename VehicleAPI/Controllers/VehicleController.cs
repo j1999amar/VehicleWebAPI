@@ -76,13 +76,21 @@ namespace VehicleAPI.Controllers
         #region Get All Vehicle Type
         [HttpGet]
         [Route("[controller]/GetAllVehicleTypes")]
-        public  ActionResult<ICollection<VehicleTypeDTO>> GetAllVehicleTypes()
+        public   ActionResult<ICollection<VehicleTypeDTO>> GetAllVehicleTypes()
         {
             try
             {
                 var vehicleTypes = _mapper.Map<ICollection<VehicleTypeDTO>>(_vehicle.GetAllVehicleTypes());
 
-                return Ok(vehicleTypes);
+                if (vehicleTypes.Count==0)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(vehicleTypes);
+
+                }
             }
             catch(Exception ex) 
             {

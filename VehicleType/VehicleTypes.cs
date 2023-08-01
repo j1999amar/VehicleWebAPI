@@ -16,7 +16,6 @@ namespace VehicleTypeModel
         public string Description { get; set; }
 
         public bool? IsActive { get; set; }
-
         public ICollection<Brands> Brands { get; set; }
 
 
