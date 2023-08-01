@@ -4,7 +4,6 @@ using DTO;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Collections.Generic;
 using VehicleAPI.Controllers;
 using VehicleInterface.Interface;
 using VehicleTypeModel;
@@ -44,6 +43,8 @@ namespace VehicleAPITests
             result.Should().NotBeNull();
             result.Should().BeAssignableTo <ActionResult<ICollection<VehicleTypeDTO>>>();
             result.Result.Should().BeAssignableTo<OkObjectResult>();
+            result.Result.As<OkObjectResult>().Value.Should().NotBeNull().And.BeOfType(vehicleDTOMock.GetType());
+            _serviceMock.Verify(x=>x.GetAllVehicleTypes(), Times.Once());
 
         }
 
