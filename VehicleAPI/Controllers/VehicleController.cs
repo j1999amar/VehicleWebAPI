@@ -25,15 +25,20 @@ namespace VehicleAPI.Controllers
         {
             try
             {
-                var vehiclType =  _mapper.Map<VehicleTypes>(vehicleTypeDTO);
-                var vehicleTypeIsAdded = await _vehicle.AddVehicleType(vehiclType);
-                if (vehicleTypeIsAdded != null)
+                if (vehicleTypeDTO == null)
                 {
-                    return Ok(vehicleTypeDTO);
+                    return BadRequest();
+
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
                 }
                 else
                 {
-                    return BadRequest(null);
+                    var vehiclType = _mapper.Map<VehicleTypes>(vehicleTypeDTO);
+                    var vehicleTypeIsAdded = await _vehicle.AddVehicleType(vehiclType);
+                    return Ok(vehicleTypeDTO);
                 }
             }
             catch (Exception ex)
@@ -55,7 +60,7 @@ namespace VehicleAPI.Controllers
             {
                 if (id != vehicleTypeDTO.VehicleTypeId)
                 {
-                    return BadRequest("Id not match");
+                    return BadRequest("Id not match with update id");
                 }
                 if (_vehicle.IsExists(id))
                 {
