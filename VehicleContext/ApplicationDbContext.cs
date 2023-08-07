@@ -8,41 +8,41 @@ using VehicleTypeModel;
 
 namespace VehicleContext
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-                
+
         }
 
         public DbSet<Brands> Brands { get; set; }
-        public DbSet<VehicleType> VehicleTypes { get; set; }
+        public DbSet<VehicleTypes> VehicleTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region VehicleType Property
 
             //Setting Vehicle Type Id is Required 
-            modelBuilder.Entity<VehicleType>()
+            modelBuilder.Entity<VehicleTypes>()
                  .Property(vehicleType => vehicleType.VehicleTypeId).IsRequired();
 
             //Setting Vehicle Type Name Limit
-            modelBuilder.Entity<VehicleType>()
-                 .Property(vehicleType => vehicleType.VehicleTypeName).IsRequired().HasMaxLength(255);
+            modelBuilder.Entity<VehicleTypes>()
+                 .Property(vehicleType => vehicleType.VehicleType).IsRequired().HasMaxLength(50);
 
             //Setting Vehicle Type Description Limit
-            modelBuilder.Entity<VehicleType>()
-                 .Property(vehicleType => vehicleType.Description).IsRequired().HasMaxLength(500);
+            modelBuilder.Entity<VehicleTypes>()
+                 .Property(vehicleType => vehicleType.Description).IsRequired().HasMaxLength(100);
 
             #endregion
 
             #region VehicleType Key Constraints & Relations
             //Primary Key For Brands
-            modelBuilder.Entity<VehicleType>().HasKey(vehicleType => vehicleType.VehicleTypeId);
+            modelBuilder.Entity<VehicleTypes>().HasKey(vehicleType => vehicleType.VehicleTypeId);
 
 
             //Relation between Vehicle Type & Brands
-            modelBuilder.Entity<VehicleType>()
+            modelBuilder.Entity<VehicleTypes>()
                         .HasMany(vehicleType => vehicleType.Brands)
                         .WithOne(brand => brand.VehicleType)
                         .HasForeignKey(brand => brand.VehicleTypeId);
@@ -57,11 +57,11 @@ namespace VehicleContext
 
             //Setting Vehicle Type Name Limit
             modelBuilder.Entity<Brands>()
-                 .Property(brands => brands.BrandName).IsRequired().HasMaxLength(255);
+                 .Property(brands => brands.Brand).IsRequired().HasMaxLength(45);
 
             //Setting Vehicle Type Description Limit
             modelBuilder.Entity<Brands>()
-                 .Property(brands => brands.Description).IsRequired().HasMaxLength(500);
+                 .Property(brands => brands.Description).IsRequired().HasMaxLength(100);
 
             #endregion    
 

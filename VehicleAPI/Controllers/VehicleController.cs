@@ -25,20 +25,25 @@ namespace VehicleAPI.Controllers
         {
             try
             {
-                var vehiclType =  _mapper.Map<VehicleType>(vehicleTypeDTO);
-                var vehicleTypeIsAdded = await _vehicle.AddVehicleType(vehiclType);
-                if (vehicleTypeIsAdded != null)
+                if (vehicleTypeDTO == null)
                 {
-                    return Ok(vehicleTypeDTO);
+                    return BadRequest();
+
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
                 }
                 else
                 {
-                    return BadRequest(null);
+                    var vehiclType = _mapper.Map<VehicleTypes>(vehicleTypeDTO);
+                    var vehicleTypeIsAdded = await _vehicle.AddVehicleType(vehiclType);
+                    return Ok(vehicleTypeDTO);
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
 
         }
@@ -49,17 +54,17 @@ namespace VehicleAPI.Controllers
 
         [HttpPut]
         [Route("[controller]/UpdateVehicleType/{id}")]
-        public async Task<ActionResult<VehicleTypeDTO>> UpdateVehicleType([FromRoute] Guid id, [FromBody] VehicleTypeDTO vehicleTypeDTO)
+        public async Task<ActionResult<VehicleTypeDTO>> UpdateVehicleType([FromRoute] int id, [FromBody] VehicleTypeDTO vehicleTypeDTO)
         {
             try
             {
                 if (id != vehicleTypeDTO.VehicleTypeId)
                 {
-                    return BadRequest("Id not match");
+                    return BadRequest("Id not match with update id");
                 }
                 if (_vehicle.IsExists(id))
                 {
-                    var vehicleType = _mapper.Map<VehicleType>(vehicleTypeDTO);
+                    var vehicleType = _mapper.Map<VehicleTypes>(vehicleTypeDTO);
                     await _vehicle.UpdateVehicleType(id, vehicleType);
                     return Ok(vehicleTypeDTO);
                 }
@@ -76,13 +81,21 @@ namespace VehicleAPI.Controllers
         #region Get All Vehicle Type
         [HttpGet]
         [Route("[controller]/GetAllVehicleTypes")]
-        public  ActionResult<ICollection<VehicleTypeDTO>> GetAllVehicleTypes()
+        public   ActionResult<ICollection<VehicleTypeDTO>> GetAllVehicleTypes()
         {
             try
             {
                 var vehicleTypes = _mapper.Map<ICollection<VehicleTypeDTO>>(_vehicle.GetAllVehicleTypes());
 
-                return Ok(vehicleTypes);
+                if (vehicleTypes.Count==0)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(vehicleTypes);
+
+                }
             }
             catch(Exception ex) 
             {

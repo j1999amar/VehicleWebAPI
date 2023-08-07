@@ -8,11 +8,11 @@ using VehicleTypeModel;
 
 namespace DTO
 {
-    public class Mapper:Profile
+    public class MapperProfile:Profile
     {
-        public Mapper()
+        public MapperProfile()
         {
-            CreateMap<VehicleType,VehicleTypeDTO>().ReverseMap();
+            CreateMap<VehicleTypes,VehicleTypeDTO>().ReverseMap();
             CreateMap<Brands, BrandDTO>().ReverseMap();
 
         }
