@@ -31,10 +31,6 @@ namespace VehicleInterface
             _context.Remove(brand);
             return _context.SaveChanges() > 0 ? true : false;
         }
-        public ICollection<Brands> GetAllBrands()
-        {
-            return _context.Brands.ToList();
-        }
 
         public ICollection<Brands> GetAllBrandsOfAVehicleType(int id)
         {
@@ -47,16 +43,7 @@ namespace VehicleInterface
         {
             return _context.Brands.Any(brand =>brand.BrandId == id);
         }
-        public async Task<Brands> UpdateBrands(int id, Brands brand)
-        {
-            _context.Brands.Entry(brand).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return brand;
-        }
 
-        public Task<Brands> UpdateBrands(Brands brand)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

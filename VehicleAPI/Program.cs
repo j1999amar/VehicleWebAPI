@@ -20,6 +20,8 @@ builder.Services.AddAutoMapper(typeof(MapperProfile));
 #region  Interface Config
 builder.Services.AddScoped<IVehicleInterface, VehicleRepository>();
 builder.Services.AddScoped<IBrandInterface, BrandRepository>();
+builder.Services.AddScoped<IModelInterface, ModelRepository>();
+
 
 
 #endregion
