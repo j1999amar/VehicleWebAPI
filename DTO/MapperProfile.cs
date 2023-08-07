@@ -14,6 +14,8 @@ namespace DTO
         {
             CreateMap<VehicleTypes,VehicleTypeDTO>().ReverseMap();
             CreateMap<Brands, BrandDTO>().ReverseMap();
+            CreateMap<Models, ModelDTO>().ReverseMap();
+
 
         }
     }

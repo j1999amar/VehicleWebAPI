@@ -19,23 +19,6 @@ namespace VehicleAPI.Controllers
             _vehicle = vehicleInterface;
             _mapper = mapper;
         }
-        #region Get All Brands
-        [HttpGet]
-        [Route("[controller]/GetAllBrands")]
-        public ActionResult<ICollection<BrandDTO>> GetAllVehicleTypes()
-        {
-            try
-            {
-                var brands = _mapper.Map<ICollection<BrandDTO>>(_brand.GetAllBrands());
-
-                return Ok(brands);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
 
         #region Get All Brands Of A Vehicle Type
         [HttpGet]
@@ -81,35 +64,6 @@ namespace VehicleAPI.Controllers
         }
         #endregion
 
-        #region Brand Put Method
-        [HttpPut]
-        [Route("[controller]/UpdateBrand/{id}")]
-        public async Task<ActionResult<BrandDTO>> UpdateBrand([FromRoute] int id,[FromBody] BrandDTO brandDTO)
-        {
-            try
-            {
-                if (id != brandDTO.BrandId)
-                {
-                    return BadRequest("Id not match");
-                }
-                if (_brand.IsExists(id)&&_vehicle.IsExists(brandDTO.VehicleTypeId))
-                {
-                    var brand = _mapper.Map<Brands>(brandDTO);
-                    await _brand.UpdateBrands(id, brand);
-                    return Ok(brandDTO);
-                }
-                else
-                {
-                    return BadRequest("Id not exists");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-        }
-        #endregion
 
         #region Brand Delete Method
         [HttpDelete]
