@@ -10,8 +10,6 @@ namespace VehicleInterface.Interface
     public interface IBrandInterface
     {
         public Task<Brands> AddBrand(Brands brand);
-        public ICollection<Brands> GetAllBrands();
-        public Task<Brands> UpdateBrands(int id,Brands brand);
 
         public bool DeleteBrand(int id);
         public bool IsExists(int id);

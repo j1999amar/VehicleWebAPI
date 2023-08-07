@@ -17,6 +17,7 @@ namespace VehicleContext
 
         public DbSet<Brands> Brands { get; set; }
         public DbSet<VehicleTypes> VehicleTypes { get; set; }
+        public DbSet<Models> Models { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,15 +52,15 @@ namespace VehicleContext
 
             #region Brands Property
 
-            //Setting Vehicle Type Id is Required 
+            //Setting Brand Id is Required 
             modelBuilder.Entity<Brands>()
                  .Property(brands => brands.BrandId).IsRequired();
 
-            //Setting Vehicle Type Name Limit
+            //Setting Brand Name Limit
             modelBuilder.Entity<Brands>()
                  .Property(brands => brands.Brand).IsRequired().HasMaxLength(45);
 
-            //Setting Vehicle Type Description Limit
+            //Setting Brand Description Limit
             modelBuilder.Entity<Brands>()
                  .Property(brands => brands.Description).IsRequired().HasMaxLength(100);
 
@@ -78,7 +79,34 @@ namespace VehicleContext
 
             #endregion
 
+            #region Model Property
 
+            //Setting Model Id is Required 
+            modelBuilder.Entity<Models>()
+                 .Property(model => model.ModelId).IsRequired();
+
+            //Setting Model Name Limit
+            modelBuilder.Entity<Models>()
+                 .Property(model => model.modelname).IsRequired().HasMaxLength(45);
+
+            //Setting Model Description Limit
+            modelBuilder.Entity<Models>()
+                 .Property(model => model.Description).IsRequired().HasMaxLength(100);
+
+            #endregion
+
+            #region Model Key Constraints & Relations
+            //Primary Key For Model
+            modelBuilder.Entity<Models>().HasKey(model => model.ModelId);
+
+
+            //Relation between Model & Brands
+            modelBuilder.Entity<Models>()
+                .HasOne(model=>model.Brands)
+                .WithMany(brands=>brands.Model)
+                .HasForeignKey(model => model.BrandId);
+
+            #endregion
         }
     }
 }

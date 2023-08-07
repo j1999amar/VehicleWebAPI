@@ -23,5 +23,6 @@ namespace VehicleTypeModel
 
         public int? VehicleTypeId { get; set; }
         public VehicleTypes VehicleType { get; set; }
+        public ICollection<Models> Model { get; set; }
     }
 }
