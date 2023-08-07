@@ -67,17 +67,29 @@ namespace VehicleAPI.Controllers
         {
             try
             {
-                if (_brand.IsExists(id))
+                if (!_brand.IsExists(id))
                 {
-                    var getAllModelByBrandList = await _model.GetAllModelByBrand(id);
-                    var getAllModelByBrandDTOList = _mapper.Map<ICollection<ModelDTO>>(getAllModelByBrandList);
-                    return Ok(getAllModelByBrandDTOList);
+                    return BadRequest("Brand Id Not Found");
+
                 }
                 else
                 {
-                    return BadRequest("Brand Id is not exists");
+                    var getAllModelByBrandList = await _model.GetAllModelByBrand(id);
+                    var getAllModelByBrandDTOList = _mapper.Map<ICollection<ModelDTO>>(getAllModelByBrandList);
+                    if(getAllModelByBrandDTOList.Count > 0)
+                    {
+                        return Ok(getAllModelByBrandDTOList);
+                    }
+                    else
+                    {
+                        return BadRequest("Data is not found");
+                    }
                 }
-            }catch(Exception ex)
+                
+
+
+            }
+            catch(Exception ex)
             {
                 return BadRequest(ex.Message); 
             }

@@ -87,7 +87,7 @@ namespace VehicleAPITests
         {
             //Arrange
             int id = 1;
-            var brandByVehicleTypeList = _mapper.Map<ICollection<Brands>>(null);
+            ICollection<Brands> brandByVehicleTypeList = null;
             _brandMock.Setup(x => x.GetAllBrandsOfAVehicleType(id)).Returns(brandByVehicleTypeList);
             _vehicleMock.Setup(x => x.IsExists(id)).Returns(false);
 

@@ -32,14 +32,15 @@ namespace VehicleAPITests
             _mapper = mapConfig.CreateMapper();
             _sut = new ModelController( _modelMock.Object,_brandMock.Object, _mapper);
         }
+        #region Model Post 
         [Fact]
         public async void AddModelForBrand_ShouldReturnOkResponse_WhenDataIsValid()
         {
             //Arrange
             var modelDTOMock = _fixture.Create<ModelDTO>();
-            var modelMock=_mapper.Map<Models>(modelDTOMock);
+            var modelMock = _mapper.Map<Models>(modelDTOMock);
             _modelMock.Setup(x => x.AddModelForBrand(modelMock)).ReturnsAsync(modelMock);
-            _brandMock.Setup(x=> x.IsExists(modelDTOMock.BrandId)).Returns(true);
+            _brandMock.Setup(x => x.IsExists(modelDTOMock.BrandId)).Returns(true);
             //Act
             var result = await _sut.AddModelForBrand(modelDTOMock);
             //Assert
@@ -85,5 +86,75 @@ namespace VehicleAPITests
             _modelMock.Verify(x => x.AddModelForBrand(modelMock), Times.Never);
             _brandMock.Verify(x => x.IsExists(modelDTOMock.BrandId), Times.Once);
         }
+        #endregion
+
+        #region Get All Model By Brand 
+        [Fact]
+        public async void GetAllModelByBrand_ShouldReturnOkResponse_WhenDataFound()
+        {
+            //Arrange
+            int id = _fixture.Create<int>();
+            var modelDataWithBrandId = _fixture.Build<ModelDTO>()
+                .With(o => o.BrandId, id)
+                .CreateMany(5)
+                .ToList();
+            var modelByBrand = _mapper.Map<ICollection<Models>>(modelDataWithBrandId);
+            _modelMock.Setup(x => x.GetAllModelByBrand(id)).ReturnsAsync(modelByBrand);
+            _brandMock.Setup(x => x.IsExists(id)).Returns(true);
+
+            //Act
+            var result = await _sut.GetAllModelByBrand(id);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<ModelDTO>>>();
+            var getResult = result.Result.Should().BeOfType<OkObjectResult>().Subject;
+            var getResultValue = getResult.Value as ICollection<ModelDTO>;
+            getResultValue.Count.Should().Be(5);
+            _modelMock.Verify(x => x.GetAllModelByBrand(id),Times.Once);
+            _brandMock.Verify(x => x.IsExists(id), Times.Once);
+        }
+
+        [Fact]
+        public async void GetAllModelByBrand_ShouldReturnBadResponse_WhenDataNotFound()
+        {
+            //Arrange
+           
+            int id = _fixture.Create<int>();
+            ICollection < Models > modelMock= null;
+            _modelMock.Setup(x => x.GetAllModelByBrand(id)).ReturnsAsync(modelMock);
+            _brandMock.Setup(x => x.IsExists(id)).Returns(true);
+
+            //Act
+            var result =await _sut.GetAllModelByBrand(id);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<ModelDTO>>>();
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
+            _modelMock.Verify(x => x.GetAllModelByBrand(id), Times.Once());
+            _brandMock.Verify(x => x.IsExists(id), Times.Once());
+        }
+
+        [Fact]
+        public async void GetAllModelByBrand_ShouldReturnBadResponse_WhenBrandIdIsNotExists()
+        {
+            //Arrange
+            int id = 1;
+            ICollection<Models> modelMock = null;
+            _modelMock.Setup(x => x.GetAllModelByBrand(id)).ReturnsAsync(modelMock);
+            _brandMock.Setup(x => x.IsExists(id)).Returns(false);
+
+            //Act
+            var result = await _sut.GetAllModelByBrand(id);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<ModelDTO>>>();
+            result.Result.Should().BeOfType<BadRequestObjectResult>();
+            _modelMock.Verify(x => x.GetAllModelByBrand(id), Times.Never());
+            _brandMock.Verify(x => x.IsExists(id), Times.Once());
+        }
+        #endregion
     }
 }
