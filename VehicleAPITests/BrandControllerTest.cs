@@ -143,6 +143,45 @@ namespace VehicleAPITests
         }
         #endregion
 
+        #region Delete Brand
+
+        [Fact]
+         public void DeleteBrand_ShouldReturnOkResponse_WhenDeleteIdIsVaild()
+        {
+            //Arrange
+            var brandDTO = _fixture.Create<BrandDTO>();
+            var brand = _mapper.Map<Brands>(brandDTO);
+            _brandMock.Setup(x =>x.DeleteBrand(brandDTO.BrandId)).Returns(true);
+            _brandMock.Setup(x=>x.IsExists (brandDTO.BrandId)).Returns(true);
+            //Act
+            var result = _sut.DeleteBrand(brandDTO.BrandId);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<OkObjectResult>();
+            _brandMock.Verify(x => x.DeleteBrand(brandDTO.BrandId), Times.Once);
+            _brandMock.Verify(x => x.IsExists(brandDTO.BrandId), Times.Once);
+
+        }
+
+        [Fact]
+        public void DeleteBrand_ShouldReturnOkResponse_WhenDeleteIdIsNotVaild()
+        {
+            //Arrange
+            var brandDTO = _fixture.Create<BrandDTO>();
+            var brand = _mapper.Map<Brands>(brandDTO);
+            _brandMock.Setup(x => x.DeleteBrand(brandDTO.BrandId)).Returns(false);
+            _brandMock.Setup(x => x.IsExists(brandDTO.BrandId)).Returns(false);
+            //Act
+            var result = _sut.DeleteBrand(brandDTO.BrandId);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
+            _brandMock.Verify(x => x.DeleteBrand(brandDTO.BrandId), Times.Never);
+            _brandMock.Verify(x => x.IsExists(brandDTO.BrandId), Times.Once);
+        }
+
+        #endregion
+
 
     }
 }

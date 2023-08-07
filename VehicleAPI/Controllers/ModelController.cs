@@ -23,30 +23,32 @@ namespace VehicleAPI.Controllers
         #region Model Post 
         [HttpPost]
         [Route("[controller]/addModelForBrand")]
-        public async Task<ActionResult<BrandDTO>> AddModelForBrand([FromBody] ModelDTO modelDTO)
+        public async Task<ActionResult<ModelDTO>> AddModelForBrand([FromBody] ModelDTO modelDTO)
         {
             try
             {
-                var model = _mapper.Map<Models>(modelDTO);
-                if (_brand.IsExists(modelDTO.BrandId))
+                if (modelDTO == null)
                 {
-                    var modelIsAdded = await _model.AddModelForBrand(model);
-                    if (modelIsAdded != null)
-                    {
-                        return Ok(modelDTO);
-                    }
-                    else
-                    {
-                        return BadRequest("Some went wrong");
-                    }
+                    return BadRequest();
+
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
                 }
                 else
                 {
-                    return BadRequest("Brand Id not exists");
+                    var model = _mapper.Map<Models>(modelDTO);
+                    if (_brand.IsExists(modelDTO.BrandId))
+                    {
+                        var modelIsAdded = await _model.AddModelForBrand(model);                        
+                         return Ok(modelDTO);
+                    }
+                    else
+                    {
+                        return BadRequest("Brand Id not exists");
+                    }
                 }
-
-
-               
             }
             catch (Exception ex)
             {

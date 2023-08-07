@@ -93,7 +93,6 @@ namespace VehicleAPI.Controllers
         }
         #endregion
 
-
         #region Brand Delete Method
         [HttpDelete]
         [Route("[controller]/DeleteBrand/{id}")]
@@ -106,7 +105,7 @@ namespace VehicleAPI.Controllers
             }
             else
             {
-                return BadRequest("Something went wrong");
+                return BadRequest("Something Went Wrong");
             }
         }
         #endregion
