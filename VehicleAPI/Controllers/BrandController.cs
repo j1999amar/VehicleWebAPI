@@ -25,14 +25,29 @@ namespace VehicleAPI.Controllers
         [Route("[controller]/GetAllBrandsOfAVehicleType/{id}")]
         public ActionResult<ICollection<BrandDTO>> GetAllBrandsOfAVehicleType ( [FromRoute] int id)
         {
-            if (_vehicle.IsExists(id))
+            try
             {
-                var brandsByVehicleType =  _mapper.Map<ICollection<BrandDTO>>(_brand.GetAllBrandsOfAVehicleType(id));
-                return Ok(brandsByVehicleType);
+                if (_vehicle.IsExists(id))
+                {
+                    var brandsByVehicleType = _mapper.Map<ICollection<BrandDTO>>(_brand.GetAllBrandsOfAVehicleType(id));
+                    if(brandsByVehicleType.Count>0)
+                    {
+                        return Ok(brandsByVehicleType);
+
+                    }
+                    else
+                    {
+                        return BadRequest("Data Not Found");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Id not found");
+                }
             }
-            else
+            catch(Exception ex) 
             {
-                return BadRequest("Id not found");
+                return BadRequest(ex.Message);
             }
         }
         #endregion
@@ -40,20 +55,34 @@ namespace VehicleAPI.Controllers
         #region Brand Post Method
         [HttpPost]
         [Route("[controller]/AddBrand")]
-        public async Task<ActionResult<BrandDTO>> AddVehicleType([FromBody] BrandDTO brandDTO)
+        public async Task<ActionResult<BrandDTO>> AddBrand([FromBody] BrandDTO brandDTO)
         {
             try
             {
-                var brand =  _mapper.Map<Brands>(brandDTO);
-                var brandIsAdded = await _brand.AddBrand(brand);
-                if (brandIsAdded != null)
+               
+                if (brandDTO == null)
                 {
-                    return Ok(brandDTO);
+                    return BadRequest();
+
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
                 }
                 else
                 {
-                    return BadRequest(null);
+                   if(_vehicle.IsExists(brandDTO.VehicleTypeId))
+                    {
+                        var brand = _mapper.Map<Brands>(brandDTO);
+                        var brandIsAdded = await _brand.AddBrand(brand);
+                        return Ok(brandDTO);
+                    }
+                    else
+                    {
+                        return BadRequest("Vehicle Type Id Not Exsits");
+                    }
                 }
+
             }
             catch (Exception ex)
             {
@@ -63,7 +92,6 @@ namespace VehicleAPI.Controllers
 
         }
         #endregion
-
 
         #region Brand Delete Method
         [HttpDelete]
@@ -77,7 +105,7 @@ namespace VehicleAPI.Controllers
             }
             else
             {
-                return BadRequest("Something went wrong");
+                return BadRequest("Something Went Wrong");
             }
         }
         #endregion
