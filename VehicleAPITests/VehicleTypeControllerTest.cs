@@ -31,7 +31,7 @@ namespace VehicleAPITests
 
         #region GetAllVehicleTypes Test
         [Fact]
-        public async void GetAllVehicleTypes_ShouldReturnOkResponse_WhenDataFound()
+        public async void GetAllVehicleTypes_ShouldReturnOkResponse_WhenVehicleTypeListIsFound()
         {
             //Arange
             var vehicleDTOMock = _fixture.Create<ICollection<VehicleTypeDTO>>();
@@ -50,7 +50,7 @@ namespace VehicleAPITests
         }
         
         [Fact]
-        public void GetAllVehicleTypes_ShouldReturnNotFound_WhenDataNotFound()
+        public void GetAllVehicleTypes_ShouldReturnNotFound_WhenVehicleTypeListIsEmpty()
         {
 
             //Arange
@@ -69,7 +69,74 @@ namespace VehicleAPITests
 
         #region AddVehicleType Test
         [Fact]
-        public async  void AddVehicleType_ShouldReturnOkResponse_WhenDataIsVaild()
+        public async void AddVehicleType_ShouldReturnBadRequest_WhenVehicleTypeIdIsAlreadyExists()
+        {
+            //Arange
+            var vehicleTypeDTOMock = _fixture.Create<VehicleTypeDTO>();
+            var vehicleTypeMock = _mapper.Map<VehicleTypes>(vehicleTypeDTOMock);
+            _serviceMock.Setup(x => x.AddVehicleType(vehicleTypeMock)).ReturnsAsync(vehicleTypeMock);
+            _serviceMock.Setup(x => x.IsExists(vehicleTypeDTOMock.VehicleTypeId)).Returns(true);
+            //Act
+            var result = await _sut.AddVehicleType(vehicleTypeDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<VehicleTypeDTO>>();
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
+            _serviceMock.Verify(x => x.AddVehicleType(vehicleTypeMock), Times.Never());
+        }
+        [Fact]
+        public async void AddVehicleType_ShouldReturnOkResponse_WhenVehicleTypeIdIsNotExists()
+        {
+            //Arange
+            var vehicleTypeDTOMock = _fixture.Create<VehicleTypeDTO>();
+            var vehicleTypeMock = _mapper.Map<VehicleTypes>(vehicleTypeDTOMock);
+            _serviceMock.Setup(x => x.AddVehicleType(vehicleTypeMock)).ReturnsAsync(vehicleTypeMock);
+            _serviceMock.Setup(x => x.IsExists(vehicleTypeDTOMock.VehicleTypeId)).Returns(false);
+            //Act
+            var result = await _sut.AddVehicleType(vehicleTypeDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<VehicleTypeDTO>>();
+            result.Result.Should().BeAssignableTo<OkObjectResult>();
+            _serviceMock.Verify(x => x.AddVehicleType(vehicleTypeMock), Times.Never());
+        }
+
+        [Fact]
+        public async void AddVehicleType_ShouldReturnOkResponse_WhenVehicleTypeModelIsVaild()
+        {
+            //Arange
+            var vehicleTypeDTOMock = _fixture.Create<VehicleTypeDTO>();
+            var vehicleTypeMock = _mapper.Map<VehicleTypes>(vehicleTypeDTOMock);
+            _serviceMock.Setup(x => x.AddVehicleType(vehicleTypeMock)).ReturnsAsync(vehicleTypeMock);
+            _serviceMock.Setup(x => x.IsExists(vehicleTypeDTOMock.VehicleTypeId)).Returns(true);
+            //Act
+            var result = await _sut.AddVehicleType(vehicleTypeDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<VehicleTypeDTO>>();
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
+            _serviceMock.Verify(x => x.AddVehicleType(vehicleTypeMock), Times.Never());
+        }
+        [Fact]
+        public async void AddVehicleType_ShouldReturnBadRequest_WhenVehicleTypeModelIsNotVaild()
+        {
+            //Arange
+            var vehicleTypeDTOMock = _fixture.Create<VehicleTypeDTO>();
+            var vehicleTypeMock = _mapper.Map<VehicleTypes>(vehicleTypeDTOMock);
+            _serviceMock.Setup(x => x.AddVehicleType(vehicleTypeMock)).ReturnsAsync(vehicleTypeMock);
+            _serviceMock.Setup(x => x.IsExists(vehicleTypeDTOMock.VehicleTypeId)).Returns(true);
+            vehicleTypeMock.VehicleTypeId=0;
+            //Act
+            var result = await _sut.AddVehicleType(vehicleTypeDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<VehicleTypeDTO>>();
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
+            _serviceMock.Verify(x => x.AddVehicleType(vehicleTypeMock), Times.Never());
+        }
+
+        [Fact]
+        public async  void AddVehicleType_ShouldReturnOkResponse_WhenVehicleTypeDataIsNotNull()
         {
             //Arange
             var vehicleTypeDTOMock=_fixture.Create<VehicleTypeDTO>();
@@ -87,7 +154,7 @@ namespace VehicleAPITests
         }
 
         [Fact]
-        public async void AddVehicleType_ShouldReturnBadRequest_WhenDataIsNotVaild()
+        public async void AddVehicleType_ShouldReturnBadRequest_WhenVehicleTypeDataIsNull()
         {
             //Arange
             VehicleTypeDTO vehicleTypeDTOMock = null;

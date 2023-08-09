@@ -30,7 +30,11 @@ namespace VehicleAPI.Controllers
                     return BadRequest();
 
                 }
-                if (!ModelState.IsValid)
+                if(_vehicle.IsExists(vehicleTypeDTO.VehicleTypeId))
+                { 
+                    return BadRequest("Vehicle Id Is Already Exists"); 
+                }
+                if (!ModelState.IsValid )
                 {
                     return BadRequest();
                 }
