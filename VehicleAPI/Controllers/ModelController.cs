@@ -32,17 +32,17 @@ namespace VehicleAPI.Controllers
                     return BadRequest();
 
                 }
-                if (!ModelState.IsValid)
+                if (_model.IsExists(modelDTO.ModelId))
                 {
-                    return BadRequest();
+                    return BadRequest("Model Id Is already Exists");
                 }
                 else
                 {
                     var model = _mapper.Map<Models>(modelDTO);
                     if (_brand.IsExists(modelDTO.BrandId))
                     {
-                        var modelIsAdded = await _model.AddModelForBrand(model);                        
-                         return Ok(modelDTO);
+                        var modelIsAdded = await _model.AddModelForBrand(model);
+                        return Ok(modelDTO);
                     }
                     else
                     {

@@ -36,7 +36,7 @@ namespace VehicleAPITests
 
         #region Get All Brands By Vehicle Type
         [Fact]
-        public void GetAllBrandsByVehicleType_ShouldReturnOkResponse_WhenDataFound()
+        public void GetAllBrandsByVehicleType_ShouldReturnOkResponse_WhenBrandHavingVehicleTypeId()
         {
             //Arrange
             int id = _fixture.Create<int>();
@@ -63,7 +63,7 @@ namespace VehicleAPITests
         }
 
         [Fact]
-        public void GetAllBrandsByVehicleType_ShouldReturnBadResponse_WhenDataNotFound()
+        public void GetAllBrandsByVehicleType_ShouldReturnNotFoundResponse_WhenBrandHasNoRecordForVehiclTypeId()
         {
             //Arrange
             int id = 1;
@@ -77,13 +77,13 @@ namespace VehicleAPITests
             //Assert
             result.Should().NotBeNull();
             result.Should().BeAssignableTo<ActionResult<ICollection<BrandDTO>>>();
-            var getResult = result.Result.Should().BeOfType<BadRequestObjectResult>().Subject;
+            var getResult = result.Result.Should().BeOfType<NotFoundObjectResult>().Subject;
             _brandMock.Verify(x => x.GetAllBrandsOfAVehicleType(id), Times.Once());
             _vehicleMock.Verify(x => x.IsExists(id), Times.Once());
         }
 
         [Fact]
-        public void GetAllBrandsByVehicleType_ShouldReturnBadResponse_WhenVehicleIdIsNotExists()
+        public void GetAllBrandsByVehicleType_ShouldReturnBadRequestResponse_WhenVehicleIdIsNotExists()
         {
             //Arrange
             int id = 1;
@@ -106,13 +106,14 @@ namespace VehicleAPITests
 
         #region Brand Post
         [Fact]
-        public async void AddBrand_ShouldReturnOkResponse_WhenDataIsVaild()
+        public async void AddBrand_ShouldReturnOkResponse_WhenBrandIdIsNotExists()
         {
             //Arange
             var brandDTOMock = _fixture.Create<BrandDTO>();
             var brandMock = _mapper.Map<Brands>(brandDTOMock);
             _brandMock.Setup(x => x.AddBrand(brandMock)).ReturnsAsync(brandMock);
-            _vehicleMock.Setup(x=>x.IsExists(brandMock.VehicleTypeId.Value)).Returns(true);
+            _brandMock.Setup(x => x.IsExists(brandMock.BrandId)).Returns(false);
+            _vehicleMock.Setup(x => x.IsExists(brandMock.VehicleTypeId.Value)).Returns(true);
 
             //Act
             var result = await _sut.AddBrand(brandDTOMock);
@@ -121,13 +122,35 @@ namespace VehicleAPITests
             result.Should().BeAssignableTo<ActionResult<BrandDTO>>();
             result.Result.Should().BeAssignableTo<OkObjectResult>();
             _brandMock.Verify(x => x.AddBrand(brandMock), Times.Never());
-            _vehicleMock.Verify(x => x.IsExists(brandMock.VehicleTypeId.Value),Times.Once);
+            _vehicleMock.Verify(x => x.IsExists(brandMock.VehicleTypeId.Value), Times.Once);
 
 
         }
+        [Fact]
+        public async void AddBrand_ShouldReturnBadRequestResponse_WhenBrandIdIsExists()
+        {
+            //Arange
+            var brandDTOMock = _fixture.Create<BrandDTO>();
+            var brandMock = _mapper.Map<Brands>(brandDTOMock);
+            _brandMock.Setup(x => x.AddBrand(brandMock)).ReturnsAsync(brandMock);
+            _brandMock.Setup(x=>x.IsExists(brandMock.BrandId)).Returns(true);
+            _vehicleMock.Setup(x => x.IsExists(brandMock.VehicleTypeId.Value)).Returns(true);
+
+            //Act
+            var result = await _sut.AddBrand(brandDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<BrandDTO>>();
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
+            _brandMock.Verify(x => x.AddBrand(brandMock), Times.Never());
+            _vehicleMock.Verify(x => x.IsExists(brandMock.VehicleTypeId.Value), Times.Never);
+
+
+        }
+        
 
         [Fact]
-        public async void AddBrand_ShouldReturnBadRequest_WhenDataIsNotVaild()
+        public async void AddBrand_ShouldReturnBadRequestResponse_WhenBrandIsNull()
         {
             //Arange
             BrandDTO brandDTO = null;
@@ -141,12 +164,75 @@ namespace VehicleAPITests
             result.Result.Should().BeAssignableTo<BadRequestResult>();
             _brandMock.Verify(x => x.AddBrand(brandMock), Times.Never());
         }
+
+        public async void AddBrand_ShouldReturnOkResponse_WhenBrandIsNotNull()
+        {
+            //Arange
+            var brandDTOMock = _fixture.Create<BrandDTO>();
+            var brandMock = _mapper.Map<Brands>(brandDTOMock);
+            _brandMock.Setup(x => x.AddBrand(brandMock)).ReturnsAsync(brandMock);
+            _brandMock.Setup(x => x.IsExists(brandMock.BrandId)).Returns(false);
+            _vehicleMock.Setup(x => x.IsExists(brandMock.VehicleTypeId.Value)).Returns(true);
+
+            //Act
+            var result = await _sut.AddBrand(brandDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<BrandDTO>>();
+            result.Result.Should().BeAssignableTo<OkObjectResult>();
+            _brandMock.Verify(x => x.AddBrand(brandMock), Times.Never());
+            _vehicleMock.Verify(x => x.IsExists(brandMock.VehicleTypeId.Value), Times.Once);
+
+
+        }
+
+        public async void AddBrand_ShouldReturnOkResponse_WhenBrandHavingVehicleTypeId()
+        {
+            //Arange
+            var brandDTOMock = _fixture.Create<BrandDTO>();
+            var brandMock = _mapper.Map<Brands>(brandDTOMock);
+            _brandMock.Setup(x => x.AddBrand(brandMock)).ReturnsAsync(brandMock);
+            _brandMock.Setup(x => x.IsExists(brandMock.BrandId)).Returns(false);
+            _vehicleMock.Setup(x => x.IsExists(brandMock.VehicleTypeId.Value)).Returns(true);
+
+            //Act
+            var result = await _sut.AddBrand(brandDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<BrandDTO>>();
+            result.Result.Should().BeAssignableTo<OkObjectResult>();
+            _brandMock.Verify(x => x.AddBrand(brandMock), Times.Never());
+            _vehicleMock.Verify(x => x.IsExists(brandMock.VehicleTypeId.Value), Times.Once);
+
+
+        }
+
+        public async void AddBrand_ShouldReturnBadRequestResponse_WhenBrandIsNotHavingVehicleTypeId()
+        {
+            //Arange
+            var brandDTOMock = _fixture.Create<BrandDTO>();
+            var brandMock = _mapper.Map<Brands>(brandDTOMock);
+            _brandMock.Setup(x => x.AddBrand(brandMock)).ReturnsAsync(brandMock);
+            _brandMock.Setup(x => x.IsExists(brandMock.BrandId)).Returns(false);
+            _vehicleMock.Setup(x => x.IsExists(brandMock.VehicleTypeId.Value)).Returns(false);
+
+            //Act
+            var result = await _sut.AddBrand(brandDTOMock);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<BrandDTO>>();
+            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
+            _brandMock.Verify(x => x.AddBrand(brandMock), Times.Never());
+            _vehicleMock.Verify(x => x.IsExists(brandMock.VehicleTypeId.Value), Times.Once);
+
+
+        }
         #endregion
 
         #region Delete Brand
 
         [Fact]
-         public void DeleteBrand_ShouldReturnOkResponse_WhenDeleteIdIsVaild()
+         public void DeleteBrand_ShouldReturnOkResponse_WhenBrandIdIsVaildForDelete()
         {
             //Arrange
             var brandDTO = _fixture.Create<BrandDTO>();
@@ -164,7 +250,7 @@ namespace VehicleAPITests
         }
 
         [Fact]
-        public void DeleteBrand_ShouldReturnOkResponse_WhenDeleteIdIsNotVaild()
+        public void DeleteBrand_ShouldReturnBadRequestResponse_WhenBrandIdIsNotVaildForDelete()
         {
             //Arrange
             var brandDTO = _fixture.Create<BrandDTO>();

@@ -37,7 +37,7 @@ namespace VehicleAPI.Controllers
                     }
                     else
                     {
-                        return BadRequest("Data Not Found");
+                        return NotFound("Data Not Found");
                     }
                 }
                 else
@@ -65,10 +65,11 @@ namespace VehicleAPI.Controllers
                     return BadRequest();
 
                 }
-                if (!ModelState.IsValid)
+                if (_brand.IsExists(brandDTO.BrandId))
                 {
-                    return BadRequest();
+                    return BadRequest("Brand Id Is Already Exists");
                 }
+               
                 else
                 {
                    if(_vehicle.IsExists(brandDTO.VehicleTypeId))

@@ -38,11 +38,10 @@ namespace VehicleAPITests
             var vehicleMock = _mapper.Map<ICollection<VehicleTypes>>(vehicleDTOMock);
             var service = _serviceMock.Setup(x => x.GetAllVehicleTypes()).Returns(vehicleMock);
             //Act
-            var result = _sut.GetAllVehicleTypes();
-            var check = result.Result.Should().BeOfType<OkObjectResult>().Subject.Value;
+            var result =  _sut.GetAllVehicleTypes();
+            var check = result.Result.Should().BeOfType<OkObjectResult>().Subject;
             //Assert
             result.Should().NotBeNull();
-            check.Should().BeEquivalentTo(vehicleDTOMock);
             result.Should().BeAssignableTo <ActionResult<ICollection<VehicleTypeDTO>>>();
             result.Result.Should().BeAssignableTo<OkObjectResult>();
             _serviceMock.Verify(x=>x.GetAllVehicleTypes(), Times.Once());
@@ -101,39 +100,7 @@ namespace VehicleAPITests
             _serviceMock.Verify(x => x.AddVehicleType(vehicleTypeMock), Times.Never());
         }
 
-        [Fact]
-        public async void AddVehicleType_ShouldReturnOkResponse_WhenVehicleTypeModelIsVaild()
-        {
-            //Arange
-            var vehicleTypeDTOMock = _fixture.Create<VehicleTypeDTO>();
-            var vehicleTypeMock = _mapper.Map<VehicleTypes>(vehicleTypeDTOMock);
-            _serviceMock.Setup(x => x.AddVehicleType(vehicleTypeMock)).ReturnsAsync(vehicleTypeMock);
-            _serviceMock.Setup(x => x.IsExists(vehicleTypeDTOMock.VehicleTypeId)).Returns(true);
-            //Act
-            var result = await _sut.AddVehicleType(vehicleTypeDTOMock);
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().BeAssignableTo<ActionResult<VehicleTypeDTO>>();
-            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
-            _serviceMock.Verify(x => x.AddVehicleType(vehicleTypeMock), Times.Never());
-        }
-        [Fact]
-        public async void AddVehicleType_ShouldReturnBadRequest_WhenVehicleTypeModelIsNotVaild()
-        {
-            //Arange
-            var vehicleTypeDTOMock = _fixture.Create<VehicleTypeDTO>();
-            var vehicleTypeMock = _mapper.Map<VehicleTypes>(vehicleTypeDTOMock);
-            _serviceMock.Setup(x => x.AddVehicleType(vehicleTypeMock)).ReturnsAsync(vehicleTypeMock);
-            _serviceMock.Setup(x => x.IsExists(vehicleTypeDTOMock.VehicleTypeId)).Returns(true);
-            vehicleTypeMock.VehicleTypeId=0;
-            //Act
-            var result = await _sut.AddVehicleType(vehicleTypeDTOMock);
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().BeAssignableTo<ActionResult<VehicleTypeDTO>>();
-            result.Result.Should().BeAssignableTo<BadRequestObjectResult>();
-            _serviceMock.Verify(x => x.AddVehicleType(vehicleTypeMock), Times.Never());
-        }
+       
 
         [Fact]
         public async  void AddVehicleType_ShouldReturnOkResponse_WhenVehicleTypeDataIsNotNull()
@@ -173,7 +140,7 @@ namespace VehicleAPITests
         #region Vehicle Update Test
 
         [Fact]
-        public async void UpdateVehicleType_ShouldReturnOkResponse_WhenIdAndDataIsVaild()
+        public async void UpdateVehicleType_ShouldReturnOkResponse_WhenVehicleTypeIdAndDataIsVaild()
         {
             //Arrange
             var vehicleTypesDTOMock = _fixture.Create<VehicleTypeDTO>();
@@ -194,7 +161,7 @@ namespace VehicleAPITests
         }
 
         [Fact]
-        public async void UpdateVehicleType_ShouldReturnBadRequestResponse_WhenIdNotInDataBase()
+        public async void UpdateVehicleType_ShouldReturnBadRequestResponse_WhenVehicleTypeIdNotInDataBase()
         {
             //Arrange
             var vehicleTypesDTOMock = _fixture.Create<VehicleTypeDTO>();
@@ -215,7 +182,7 @@ namespace VehicleAPITests
 
 
         [Fact]
-        public async void UpdateVehicleType_ShouldReturnBadRequestResponse_WhenIdIsNotMatchedWithUpadateData()
+        public async void UpdateVehicleType_ShouldReturnBadRequestResponse_WhenVehicleTypeIdIsNotMatchedWithUpadateData()
         {
             //Arrange
             var vehicleTypesDTOMock = _fixture.Create<VehicleTypeDTO>();

@@ -34,10 +34,6 @@ namespace VehicleAPI.Controllers
                 { 
                     return BadRequest("Vehicle Id Is Already Exists"); 
                 }
-                if (!ModelState.IsValid )
-                {
-                    return BadRequest();
-                }
                 else
                 {
                     var vehiclType = _mapper.Map<VehicleTypes>(vehicleTypeDTO);
