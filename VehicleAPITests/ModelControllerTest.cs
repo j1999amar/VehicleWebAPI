@@ -154,7 +154,7 @@ namespace VehicleAPITests
         }
 
         [Fact]
-        public async void GetAllModelByBrand_ShouldReturnBadResponse_WhenModelIsFoundForBrand()
+        public async void GetAllModelByBrand_ShouldReturnNotFoundResponse_WhenModelIsNotFoundForBrand()
         {
             //Arrange
            
@@ -169,7 +169,7 @@ namespace VehicleAPITests
             //Assert
             result.Should().NotBeNull();
             result.Should().BeAssignableTo<ActionResult<ICollection<ModelDTO>>>();
-            result.Result.Should().BeOfType<BadRequestObjectResult>();
+            result.Result.Should().BeOfType<NotFoundObjectResult>();
             _modelMock.Verify(x => x.GetAllModelByBrand(id), Times.Once());
             _brandMock.Verify(x => x.IsExists(id), Times.Once());
         }
@@ -191,6 +191,55 @@ namespace VehicleAPITests
             result.Should().BeAssignableTo<ActionResult<ICollection<ModelDTO>>>();
             result.Result.Should().BeOfType<BadRequestObjectResult>();
             _modelMock.Verify(x => x.GetAllModelByBrand(id), Times.Never());
+            _brandMock.Verify(x => x.IsExists(id), Times.Once());
+        }
+
+        [Fact]
+        public async void GetAllModelByBrand_ShouldReturnOkResponse_WhenBrandListHavingCountMoreThanZero()
+        {
+            //Arrange
+            int id = _fixture.Create<int>();
+            var modelDTODataWithSameBrandId = _fixture.Build<ModelDTO>()
+                .With(o => o.BrandId, id)
+                .CreateMany(5)
+                .ToList();
+            var modelDataWithSameBrandId = _mapper.Map<ICollection<Models>>(modelDTODataWithSameBrandId);
+            _modelMock.Setup(x => x.GetAllModelByBrand(id)).ReturnsAsync(modelDataWithSameBrandId);
+            _brandMock.Setup(x => x.IsExists(id)).Returns(true);
+
+            //Act
+            var result =await  _sut.GetAllModelByBrand(id);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<ModelDTO>>>();
+            var getResult = result.Result.Should().BeOfType<OkObjectResult>().Subject;
+            var getResultValue = getResult.Value as ICollection<ModelDTO>;
+            getResultValue.Count.Should().Be(5);
+            getResultValue.First().BrandId.Should().Be(id);
+            _modelMock.Verify(x => x.GetAllModelByBrand(id), Times.Once());
+            _brandMock.Verify(x => x.IsExists(id), Times.Once());
+        }
+
+        [Fact]
+        public async void GetAllModelByBrand_ShouldReturnNotFoundResponse_WhenBrandListHavingCountIsZero()
+        {
+            //Arrange
+            int id = _fixture.Create<int>();
+          
+            var modelDataWithSameBrandId = _mapper.Map<ICollection<Models>>(null);
+            _modelMock.Setup(x => x.GetAllModelByBrand(id)).ReturnsAsync(modelDataWithSameBrandId);
+            _brandMock.Setup(x => x.IsExists(id)).Returns(true);
+
+            //Act
+            var result = await _sut.GetAllModelByBrand(id);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<ModelDTO>>>();
+            var getResult = result.Result.Should().BeOfType<NotFoundObjectResult>().Subject;
+            var getResultValue = getResult.Value as ICollection<ModelDTO>;
+            _modelMock.Verify(x => x.GetAllModelByBrand(id), Times.Once());
             _brandMock.Verify(x => x.IsExists(id), Times.Once());
         }
         #endregion

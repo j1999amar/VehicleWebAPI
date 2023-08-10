@@ -102,6 +102,54 @@ namespace VehicleAPITests
             _vehicleMock.Verify(x => x.IsExists(id), Times.Once());
         }
 
+        [Fact]
+        public void GetAllBrandsByVehicleType_ShouldReturnOkresponse_WhenBrandListHavingCountMoreThanZero()
+        {
+            //Arrange
+            int id = _fixture.Create<int>();
+            var brandDataWithSameVehicleId = _fixture.Build<BrandDTO>()
+                .With(o => o.VehicleTypeId, id)
+                .CreateMany(5)
+                .ToList();
+            var brandByVehicleTypeList = _mapper.Map<ICollection<Brands>>(brandDataWithSameVehicleId);
+            _brandMock.Setup(x => x.GetAllBrandsOfAVehicleType(id)).Returns(brandByVehicleTypeList);
+            _vehicleMock.Setup(x => x.IsExists(id)).Returns(true);
+
+            //Act
+            var result = _sut.GetAllBrandsOfAVehicleType(id);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<BrandDTO>>>();
+            var getResult = result.Result.Should().BeOfType<OkObjectResult>().Subject;
+            var getResultValue = getResult.Value as ICollection<BrandDTO>;
+            getResultValue.Count.Should().Be(5);
+            getResultValue.First().VehicleTypeId.Should().Be(id);
+            _brandMock.Verify(x => x.GetAllBrandsOfAVehicleType(id), Times.Once());
+            _vehicleMock.Verify(x => x.IsExists(id), Times.Once());
+        }
+        [Fact]
+        public void GetAllBrandsByVehicleType_ShouldReturnNotFoundResponse_WhenBrandListHavingCountZero()
+        {
+            //Arrange
+            int id = _fixture.Create<int>();
+           
+            var brandByVehicleTypeList = _mapper.Map<ICollection<Brands>>(null);
+            _brandMock.Setup(x => x.GetAllBrandsOfAVehicleType(id)).Returns(brandByVehicleTypeList);
+            _vehicleMock.Setup(x => x.IsExists(id)).Returns(true);
+
+            //Act
+            var result = _sut.GetAllBrandsOfAVehicleType(id);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<BrandDTO>>>();
+            var getResult = result.Result.Should().BeOfType<NotFoundObjectResult>().Subject;
+            var getResultValue = getResult.Value as ICollection<BrandDTO>;
+            _brandMock.Verify(x => x.GetAllBrandsOfAVehicleType(id), Times.Once());
+            _vehicleMock.Verify(x => x.IsExists(id), Times.Once());
+        }
+
         #endregion
 
         #region Brand Post

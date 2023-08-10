@@ -89,7 +89,7 @@ namespace VehicleAPI.Controllers
 
                 if (vehicleTypes.Count==0)
                 {
-                    return NotFound();
+                    return NotFound("Vehicle Data Not Found");
                 }
                 else
                 {

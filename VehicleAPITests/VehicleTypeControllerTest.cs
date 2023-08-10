@@ -60,10 +60,49 @@ namespace VehicleAPITests
             //Assert
             result.Should().NotBeNull();
             result.Should().BeAssignableTo<ActionResult<ICollection<VehicleTypeDTO>>>();
-            result.Result.Should().BeAssignableTo<NotFoundResult>();
+            result.Result.Should().BeAssignableTo<NotFoundObjectResult>();
             _serviceMock.Verify(x => x.GetAllVehicleTypes(), Times.Once());
 
         }
+
+        [Fact]
+        public void GetAllVehicleTypes_ShouldReturnOkResponse_WhenBrandListHavingCountMoreThanZero()
+        {
+            //Arrang
+            var vehicleTypeDTOList = _fixture.CreateMany<VehicleTypeDTO>(5).ToList();
+            var vehicleTypeList = _mapper.Map<ICollection<VehicleTypes>>(vehicleTypeDTOList);
+            _serviceMock.Setup(x => x.GetAllVehicleTypes()).Returns(vehicleTypeList);
+
+            //Act
+            var result = _sut.GetAllVehicleTypes();
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<VehicleTypeDTO>>>();
+            var getResult = result.Result.Should().BeOfType<OkObjectResult>().Subject;
+            var getResultValue = getResult.Value as ICollection<VehicleTypeDTO>;
+            getResultValue.Count.Should().Be(5);
+            _serviceMock.Verify(x => x.GetAllVehicleTypes(), Times.Once());
+        }
+
+        [Fact]
+        public void GetAllVehicleTypes_ShouldReturnNotFoundResponse_WhenBrandListHavingCountIsZero()
+        {
+            //Arrang
+            var vehicleTypeList = _mapper.Map<ICollection<VehicleTypes>>(null);
+            _serviceMock.Setup(x => x.GetAllVehicleTypes()).Returns(vehicleTypeList);
+
+            //Act
+            var result = _sut.GetAllVehicleTypes();
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeAssignableTo<ActionResult<ICollection<VehicleTypeDTO>>>();
+            var getResult = result.Result.Should().BeOfType<NotFoundObjectResult>().Subject;
+            var getResultValue = getResult.Value as ICollection<VehicleTypeDTO>;
+            _serviceMock.Verify(x => x.GetAllVehicleTypes(), Times.Once());
+        }
+
         #endregion
 
         #region AddVehicleType Test

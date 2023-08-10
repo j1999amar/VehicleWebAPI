@@ -82,7 +82,7 @@ namespace VehicleAPI.Controllers
                     }
                     else
                     {
-                        return BadRequest("Data is not found");
+                        return NotFound("Data is not found");
                     }
                 }
                 
